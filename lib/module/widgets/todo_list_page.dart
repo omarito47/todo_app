@@ -58,15 +58,18 @@ class _TodoListPageState extends State<TodoListPage> {
       appBar: AppBar(
         title: const Text('Todo App'),
         actions: [
-          Switch(
-            value: themeProvider.selectedMode == ThemeModeOptions.Dark,
-            onChanged: (value) {
-              if (value) {
-                themeProvider.setThemeMode(ThemeModeOptions.Dark);
-              } else {
-                themeProvider.setThemeMode(ThemeModeOptions.Light);
-              }
-            },
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Switch(
+              value: themeProvider.selectedMode == ThemeModeOptions.Dark,
+              onChanged: (value) {
+                if (value) {
+                  themeProvider.setThemeMode(ThemeModeOptions.Dark);
+                } else {
+                  themeProvider.setThemeMode(ThemeModeOptions.Light);
+                }
+              },
+            ),
           ),
         ],
       ),
@@ -78,7 +81,6 @@ class _TodoListPageState extends State<TodoListPage> {
             padding: const EdgeInsets.all(8.0),
             child: Dismissible(
               background: Container(
-                
                 color: Colors.red,
                 child: const Stack(
                   children: [
@@ -128,7 +130,7 @@ class _TodoListPageState extends State<TodoListPage> {
                   onPressed: () {
                     showEditTodoItemDialog(todoItem);
                   },
-                  icon: Icon(Icons.edit_outlined),
+                  icon: const Icon(Icons.edit_outlined),
                 ),
               ),
             ),
@@ -136,10 +138,10 @@ class _TodoListPageState extends State<TodoListPage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        shape: CircleBorder(side: BorderSide(color: Colors.white)),
-        backgroundColor: Colors.blueGrey,
+        shape: const CircleBorder(side: BorderSide(color: Colors.white)),
+        
         onPressed: _showAddTodoItemDialog,
-        child: Icon(Icons.add, color: Colors.white),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
@@ -161,7 +163,7 @@ class _TodoListPageState extends State<TodoListPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Edit Todo Item'),
+          title: const Text('Edit Todo Item'),
           content: Form(
             key: _formKey,
             child: Column(
@@ -169,7 +171,7 @@ class _TodoListPageState extends State<TodoListPage> {
               children: <Widget>[
                 TextFormField(
                   controller: titleController,
-                  decoration: InputDecoration(hintText: 'Title'),
+                  decoration: const InputDecoration(hintText: 'Title'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a title';
@@ -182,7 +184,7 @@ class _TodoListPageState extends State<TodoListPage> {
                 ),
                 TextFormField(
                   controller: descriptionController,
-                  decoration: InputDecoration(hintText: 'Description'),
+                  decoration: const InputDecoration(hintText: 'Description'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a description';
@@ -195,7 +197,7 @@ class _TodoListPageState extends State<TodoListPage> {
                 ),
                 TextFormField(
                   controller: typeController,
-                  decoration: InputDecoration(hintText: 'Type'),
+                  decoration: const InputDecoration(hintText: 'Type'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a type';
@@ -210,13 +212,13 @@ class _TodoListPageState extends State<TodoListPage> {
             ),
           ),
           actions: <Widget>[
-            TextButton(
+            ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
-            TextButton(
+            ElevatedButton(
               onPressed: () {
                 final form = _formKey.currentState;
                 if (form != null && form.validate()) {
@@ -224,7 +226,7 @@ class _TodoListPageState extends State<TodoListPage> {
                   editTodoItem(todoItem, newTitle!, newDescription!, newType!);
                 }
               },
-              child: Text('Save'),
+              child: const Text('Save'),
             ),
           ],
         );
@@ -242,14 +244,14 @@ class _TodoListPageState extends State<TodoListPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Add Todo Item'),
+          title: const Text('Add Todo Item'),
           content: Form(
             key: _formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 TextFormField(
-                  decoration: InputDecoration(hintText: 'Title'),
+                  decoration: const InputDecoration(hintText: 'Title'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a title';
@@ -261,7 +263,7 @@ class _TodoListPageState extends State<TodoListPage> {
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(hintText: 'Description'),
+                  decoration: const InputDecoration(hintText: 'Description'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a description';
@@ -273,7 +275,7 @@ class _TodoListPageState extends State<TodoListPage> {
                   },
                 ),
                 TextFormField(
-                  decoration: InputDecoration(hintText: 'Type'),
+                  decoration: const InputDecoration(hintText: 'Type'),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter a type';
@@ -288,13 +290,13 @@ class _TodoListPageState extends State<TodoListPage> {
             ),
           ),
           actions: <Widget>[
-            TextButton(
+            ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
-            TextButton(
+            ElevatedButton(
               onPressed: () {
                 final form = _formKey.currentState;
                 if (form != null && form.validate()) {
@@ -302,7 +304,7 @@ class _TodoListPageState extends State<TodoListPage> {
                   addTodoItem(title!, description!, type!);
                 }
               },
-              child: Text('Add'),
+              child: const Text('Add'),
             ),
           ],
         );
