@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_app/global/database/database_helper.dart';
 import 'package:todo_app/global/modals/todo_item.dart';
+import 'package:todo_app/global/theme/theme_mode.dart';
 
 class TodoListPage extends StatefulWidget {
   const TodoListPage({Key? key}) : super(key: key);
@@ -51,9 +53,22 @@ class _TodoListPageState extends State<TodoListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Todo List'),
+        title: const Text('Todo App'),
+        actions: [
+          Switch(
+            value: themeProvider.selectedMode == ThemeModeOptions.Dark,
+            onChanged: (value) {
+              if (value) {
+                themeProvider.setThemeMode(ThemeModeOptions.Dark);
+              } else {
+                themeProvider.setThemeMode(ThemeModeOptions.Light);
+              }
+            },
+          ),
+        ],
       ),
       body: ListView.builder(
         itemCount: todoItems.length,
@@ -63,8 +78,24 @@ class _TodoListPageState extends State<TodoListPage> {
             padding: const EdgeInsets.all(8.0),
             child: Dismissible(
               background: Container(
+                
                 color: Colors.red,
-                child: Icon(Icons.delete_forever),
+                child: const Stack(
+                  children: [
+                    Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child: Icon(Icons.delete_forever),
+                        )),
+                    Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child: Icon(Icons.delete_forever),
+                        )),
+                  ],
+                ),
               ),
               key: Key("${todoItem.id}"),
               onDismissed: (direction) {
@@ -77,8 +108,11 @@ class _TodoListPageState extends State<TodoListPage> {
                 );
               },
               child: ListTile(
-                shape: LinearBorder.bottom(
-                    side: BorderSide(color: Colors.black), size: .9),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30)),
+                tileColor: Colors.grey,
+                textColor: Colors.white,
+                iconColor: Colors.white,
                 leading: Checkbox(
                   value: todoItem.completed,
                   onChanged: (value) {
@@ -91,10 +125,11 @@ class _TodoListPageState extends State<TodoListPage> {
                 title: Text(todoItem.title),
                 subtitle: Text(todoItem.description),
                 trailing: IconButton(
-                    onPressed: () {
-                      showEditTodoItemDialog(todoItem);
-                    },
-                    icon: Icon(Icons.edit_outlined)),
+                  onPressed: () {
+                    showEditTodoItemDialog(todoItem);
+                  },
+                  icon: Icon(Icons.edit_outlined),
+                ),
               ),
             ),
           );
