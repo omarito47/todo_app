@@ -67,7 +67,8 @@ class ThemeProvider with ChangeNotifier {
     if (savedThemeMode == null) {
       themeMode = ThemeMode.system;
     } else {
-      themeMode = getThemeModeFromString(savedThemeMode);
+      //Convert the string to a ThemeMode type 
+      themeMode = convertStringToThemeModeType(savedThemeMode);
     }
 
     notifyListeners();
@@ -101,8 +102,8 @@ class ThemeProvider with ChangeNotifier {
   Future<void> saveThemeMode() async {
     await prefs.setString('themeMode', themeMode.toString());
   }
-
-  ThemeMode getThemeModeFromString(String value) {
+  //get the theme mode from string function
+  ThemeMode convertStringToThemeModeType(String value) {
     switch (value) {
       case 'ThemeMode.light':
         return ThemeMode.light;

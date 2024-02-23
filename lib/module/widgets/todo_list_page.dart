@@ -140,7 +140,7 @@ class _TodoListPageState extends State<TodoListPage> {
       floatingActionButton: FloatingActionButton(
         shape: const CircleBorder(side: BorderSide(color: Colors.white)),
         
-        onPressed: _showAddTodoItemDialog,
+        onPressed: showAddTodoItemDialog,
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );
@@ -234,7 +234,7 @@ class _TodoListPageState extends State<TodoListPage> {
     );
   }
 
-  Future<void> _showAddTodoItemDialog() async {
+  Future<void> showAddTodoItemDialog() async {
     final _formKey = GlobalKey<FormState>();
     String? title;
     String? description;

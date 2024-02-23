@@ -36,12 +36,12 @@ class DatabaseHelper {
       },
     );
   }
-
+  //Add todo item to the database
   Future<int> insertTodoItem(TodoItem todoItem) async {
     Database db = await database;
     return await db.insert(tableName, todoItem.toMap());
   }
-
+  //Update todo item from the database
   Future<int> updateTodoItem(TodoItem todoItem) async {
     Database db = await database;
     return await db.update(
@@ -51,7 +51,7 @@ class DatabaseHelper {
       whereArgs: [todoItem.id],
     );
   }
-
+  //Delete todo item from the database
   Future<int> deleteTodoItem(int id) async {
     Database db = await database;
     return await db.delete(
@@ -60,7 +60,7 @@ class DatabaseHelper {
       whereArgs: [id],
     );
   }
-
+  //Get all todo items from the database
   Future<List<TodoItem>> getTodoItems() async {
     Database db = await database;
     List<Map<String, dynamic>> maps = await db.query(tableName);
