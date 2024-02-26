@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:todo_app/global/database/database_helper.dart';
 import 'package:todo_app/global/modals/todo_item.dart';
 import 'package:todo_app/global/theme/theme_mode.dart';
+import 'package:todo_app/module/controller/todo_controller.dart';
+
 
 class TodoListPage extends StatefulWidget {
   const TodoListPage({Key? key}) : super(key: key);
@@ -12,15 +14,22 @@ class TodoListPage extends StatefulWidget {
 }
 
 class _TodoListPageState extends State<TodoListPage> {
-  List<TodoItem> todoItems = [];
+  List<TodoItem> todoItems = []; //list of object de type todo item
+  final TodoController _todoController = TodoController();
+
   @override
   void initState() {
+    //The reason why super.initState() is called before _loadTodoItems()
+    //is to ensure that the parent class's initState() method is executed first.
+    //This is important because the parent class's initState()
+    //might contain essential initialization logic or setup tasks
+    //that need to be executed before the child class's logic.
     super.initState();
-    getTodoItems();
+    _loadTodoItems();
   }
 
-  Future<void> getTodoItems() async {
-    List<TodoItem> items = await DatabaseHelper().getTodoItems();
+  Future<void> _loadTodoItems() async {
+    List<TodoItem> items = await _todoController.getTodoItems();
     setState(() {
       todoItems = items;
     });
@@ -28,26 +37,14 @@ class _TodoListPageState extends State<TodoListPage> {
 
   void editTodoItem(TodoItem todoItem, String newTitle, String newDescription,
       String newType) {
-    setState(() {
-      todoItem.title = newTitle;
-      todoItem.description = newDescription;
-      todoItem.type = newType;
-      DatabaseHelper().updateTodoItem(todoItem);
-    });
+    _todoController.editTodoItem(todoItem, newTitle, newDescription, newType);
+    _loadTodoItems();
     Navigator.of(context).pop(); // Close the edit dialog
   }
 
   void addTodoItem(String title, String description, String type) async {
-    int newId = todoItems.length + 1;
-    TodoItem newTodoItem = TodoItem(
-      id: newId,
-      title: title,
-      description: description,
-      type: type,
-      completed: false,
-    );
-    await DatabaseHelper().insertTodoItem(newTodoItem);
-    getTodoItems(); // Refresh the todo items list
+    _todoController.addTodoItem(title, description, type, todoItems);
+    _loadTodoItems(); // Refresh the todo items list
     Navigator.of(context).pop(); // Close the popup after adding the item
   }
 
@@ -63,6 +60,7 @@ class _TodoListPageState extends State<TodoListPage> {
             child: Switch(
               value: themeProvider.selectedMode == ThemeModeOptions.Dark,
               onChanged: (value) {
+                //you can us e arrow function if  we make the logic into function =>func()
                 if (value) {
                   themeProvider.setThemeMode(ThemeModeOptions.Dark);
                 } else {
@@ -109,40 +107,45 @@ class _TodoListPageState extends State<TodoListPage> {
                   SnackBar(content: Text("Removed task ${todoItem.title}")),
                 );
               },
-              child: ListTile(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30)),
-                tileColor: Colors.grey,
-                textColor: Colors.white,
-                iconColor: Colors.white,
-                leading: Checkbox(
-                  value: todoItem.completed,
-                  onChanged: (value) {
-                    setState(() {
-                      todoItem.completed = value!;
-                      DatabaseHelper().updateTodoItem(todoItem);
-                    });
-                  },
-                ),
-                title: Text(todoItem.title),
-                subtitle: Text(todoItem.description),
-                trailing: IconButton(
-                  onPressed: () {
-                    showEditTodoItemDialog(todoItem);
-                  },
-                  icon: const Icon(Icons.edit_outlined),
+              child: Card(
+                elevation: 5,
+                child: ListTile(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30)),
+                  
+                  leading: Checkbox(
+                    value: todoItem.completed,
+                    onChanged: (value) {
+                      setState(() {
+                        todoItem.completed = value!;
+                        DatabaseHelper().updateTodoItem(todoItem);
+                      });
+                    },
+                  ),
+                  title: Text(todoItem.title),
+                  subtitle: Text(todoItem.description),
+                  trailing: IconButton(
+                    onPressed: () {
+                      showEditTodoItemDialog(todoItem);
+                    },
+                    icon: const Icon(Icons.edit_outlined),
+                  ),
                 ),
               ),
             ),
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        shape: const CircleBorder(side: BorderSide(color: Colors.white)),
-        
-        onPressed: showAddTodoItemDialog,
-        child: const Icon(Icons.add, color: Colors.white),
+      bottomNavigationBar: const BottomAppBar(
+        height: 50,
+        shape: CircularNotchedRectangle(),
       ),
+      floatingActionButton: FloatingActionButton(
+        shape: const CircleBorder(),
+        onPressed: showAddTodoItemDialog,
+        child: const Icon(Icons.add),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterDocked,
     );
   }
 
@@ -163,6 +166,7 @@ class _TodoListPageState extends State<TodoListPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          
           title: const Text('Edit Todo Item'),
           content: Form(
             key: _formKey,

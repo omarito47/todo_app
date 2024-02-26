@@ -1,6 +1,4 @@
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
-import 'package:todo_app/global/modals/todo_item.dart';
+import 'package:todo_app/global/global.dart';
 
 //Shared Preferences is a simple and efficient way to store small amounts of data
 // while SQLite is useful for storing large amounts of structured data.
