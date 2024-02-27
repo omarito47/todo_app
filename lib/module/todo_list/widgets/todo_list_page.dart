@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:todo_app/global/database/database_helper.dart';
 import 'package:todo_app/global/modals/todo_item.dart';
 import 'package:todo_app/global/theme/theme_mode.dart';
-import 'package:todo_app/module/controller/todo_controller.dart';
-
+import 'package:todo_app/module/todo_item/widget/todo_item.dart';
+import 'package:todo_app/module/todo_list/controller/todo_controller.dart';
 
 class TodoListPage extends StatefulWidget {
   const TodoListPage({Key? key}) : super(key: key);
@@ -71,7 +71,10 @@ class _TodoListPageState extends State<TodoListPage> {
           ),
         ],
       ),
-      body: ListView.builder(
+      body: GridView.builder(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2, // number of columns in the grid
+      ),
         itemCount: todoItems.length,
         itemBuilder: (context, index) {
           TodoItem todoItem = todoItems[index];
@@ -110,9 +113,9 @@ class _TodoListPageState extends State<TodoListPage> {
               child: Card(
                 elevation: 5,
                 child: ListTile(
+                  
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30)),
-                  
                   leading: Checkbox(
                     value: todoItem.completed,
                     onChanged: (value) {
@@ -126,7 +129,11 @@ class _TodoListPageState extends State<TodoListPage> {
                   subtitle: Text(todoItem.description),
                   trailing: IconButton(
                     onPressed: () {
-                      showEditTodoItemDialog(todoItem);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  TodoItemPage(existingTodoItem: todoItem)));
                     },
                     icon: const Icon(Icons.edit_outlined),
                   ),
@@ -142,10 +149,17 @@ class _TodoListPageState extends State<TodoListPage> {
       ),
       floatingActionButton: FloatingActionButton(
         shape: const CircleBorder(),
-        onPressed: showAddTodoItemDialog,
+        onPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TodoItemPage(),
+              ));
+        },
         child: const Icon(Icons.add),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.miniCenterDocked,
+      floatingActionButtonLocation:
+          FloatingActionButtonLocation.miniCenterDocked,
     );
   }
 
@@ -166,7 +180,6 @@ class _TodoListPageState extends State<TodoListPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          
           title: const Text('Edit Todo Item'),
           content: Form(
             key: _formKey,
