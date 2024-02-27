@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app/global/database/database_helper.dart';
@@ -48,6 +50,8 @@ class _TodoListPageState extends State<TodoListPage> {
     Navigator.of(context).pop(); // Close the popup after adding the item
   }
 
+  bool isgridview = true;
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
@@ -55,6 +59,21 @@ class _TodoListPageState extends State<TodoListPage> {
       appBar: AppBar(
         title: const Text('Todo App'),
         actions: [
+          isgridview
+              ? IconButton(
+                  onPressed: () {
+                    setState(() {
+                      isgridview = false;
+                    });
+                  },
+                  icon: Icon(Icons.grid_view_outlined))
+              : IconButton(
+                  onPressed: () {
+                    setState(() {
+                      isgridview = true;
+                    });
+                  },
+                  icon: Icon(Icons.list)),
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: Switch(
@@ -71,78 +90,180 @@ class _TodoListPageState extends State<TodoListPage> {
           ),
         ],
       ),
-      body: GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2, // number of columns in the grid
-      ),
-        itemCount: todoItems.length,
-        itemBuilder: (context, index) {
-          TodoItem todoItem = todoItems[index];
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Dismissible(
-              background: Container(
-                color: Colors.red,
-                child: const Stack(
-                  children: [
-                    Align(
-                        alignment: Alignment.centerLeft,
-                        child: Padding(
-                          padding: EdgeInsets.all(10.0),
-                          child: Icon(Icons.delete_forever),
-                        )),
-                    Align(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                          padding: EdgeInsets.all(10.0),
-                          child: Icon(Icons.delete_forever),
-                        )),
-                  ],
-                ),
+      body: isgridview
+          ? GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, // number of columns in the grid
               ),
-              key: Key("${todoItem.id}"),
-              onDismissed: (direction) {
-                setState(() {
-                  todoItems.removeAt(index);
-                  DatabaseHelper().deleteTodoItem(todoItem.id);
-                });
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Removed task ${todoItem.title}")),
+              shrinkWrap: true,
+              itemCount: todoItems.length,
+              itemBuilder: (context, index) {
+                TodoItem todoItem = todoItems[index];
+                // Generate random height and color values
+             
+                Color randomColor =
+                    Color((Random().nextDouble() * 0xFFFFFF).toInt() << 0)
+                        .withOpacity(1.0);
+                return SizedBox(
+                 
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Dismissible(
+                      
+                        background: Container(
+                          
+                          color: Colors.red,
+                          child: const Stack(
+                            children: [
+                              Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(10.0),
+                                    child: Icon(Icons.delete_forever),
+                                  )),
+                              Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(10.0),
+                                    child: Icon(Icons.delete_forever),
+                                  )),
+                            ],
+                          ),
+                        ),
+                        key: Key("${todoItem.id}"),
+                        onDismissed: (direction) {
+                          setState(() {
+                            todoItems.removeAt(index);
+                            DatabaseHelper().deleteTodoItem(todoItem.id);
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text("Removed task ${todoItem.title}")),
+                          );
+                        },
+                        child: Container(
+                          
+                          child: Card(
+                            elevation: 5,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        TodoItemPage(existingTodoItem: todoItem),
+                                  ),
+                                );
+                              },
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Expanded(
+                                    flex: 1,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        children: [
+                                          Text(
+                                            todoItem.title,
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          SizedBox(height: 4),
+                                          // Text(
+                                          //     todoItem.description.split("\n")[0])
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Checkbox(
+                                    value: todoItem.completed,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        todoItem.completed = value!;
+                                        DatabaseHelper().updateTodoItem(todoItem);
+                                      });
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        )),
+                  ),
                 );
               },
-              child: Card(
-                elevation: 5,
-                child: ListTile(
-                  
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30)),
-                  leading: Checkbox(
-                    value: todoItem.completed,
-                    onChanged: (value) {
+            )
+          : ListView.builder(
+              itemCount: todoItems.length,
+              itemBuilder: (context, index) {
+                TodoItem todoItem = todoItems[index];
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Dismissible(
+                    background: Container(
+                      color: Colors.red,
+                      child: const Stack(
+                        children: [
+                          Align(
+                              alignment: Alignment.centerLeft,
+                              child: Padding(
+                                padding: EdgeInsets.all(10.0),
+                                child: Icon(Icons.delete_forever),
+                              )),
+                          Align(
+                              alignment: Alignment.centerRight,
+                              child: Padding(
+                                padding: EdgeInsets.all(10.0),
+                                child: Icon(Icons.delete_forever),
+                              )),
+                        ],
+                      ),
+                    ),
+                    key: Key("${todoItem.id}"),
+                    onDismissed: (direction) {
                       setState(() {
-                        todoItem.completed = value!;
-                        DatabaseHelper().updateTodoItem(todoItem);
+                        todoItems.removeAt(index);
+                        DatabaseHelper().deleteTodoItem(todoItem.id);
                       });
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text("Removed task ${todoItem.title}")),
+                      );
                     },
+                    child: Card(
+                      elevation: 5,
+                      child: ListTile(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30)),
+                        leading: Checkbox(
+                          value: todoItem.completed,
+                          onChanged: (value) {
+                            setState(() {
+                              todoItem.completed = value!;
+                              DatabaseHelper().updateTodoItem(todoItem);
+                            });
+                          },
+                        ),
+                        title: Text(todoItem.title),
+                        subtitle: Text(todoItem.description),
+                        trailing: IconButton(
+                          onPressed: () {
+                            showEditTodoItemDialog(todoItem);
+                          },
+                          icon: const Icon(Icons.edit_outlined),
+                        ),
+                      ),
+                    ),
                   ),
-                  title: Text(todoItem.title),
-                  subtitle: Text(todoItem.description),
-                  trailing: IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  TodoItemPage(existingTodoItem: todoItem)));
-                    },
-                    icon: const Icon(Icons.edit_outlined),
-                  ),
-                ),
-              ),
+                );
+              },
             ),
-          );
-        },
-      ),
       bottomNavigationBar: const BottomAppBar(
         height: 50,
         shape: CircularNotchedRectangle(),
@@ -251,81 +372,5 @@ class _TodoListPageState extends State<TodoListPage> {
     );
   }
 
-  Future<void> showAddTodoItemDialog() async {
-    final _formKey = GlobalKey<FormState>();
-    String? title;
-    String? description;
-    String? type;
-
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Add Todo Item'),
-          content: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                TextFormField(
-                  decoration: const InputDecoration(hintText: 'Title'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a title';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    title = value;
-                  },
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(hintText: 'Description'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a description';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    description = value;
-                  },
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(hintText: 'Type'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a type';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    type = value;
-                  },
-                ),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                final form = _formKey.currentState;
-                if (form != null && form.validate()) {
-                  form.save();
-                  addTodoItem(title!, description!, type!);
-                }
-              },
-              child: const Text('Add'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+ 
 }
