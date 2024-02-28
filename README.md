@@ -4,7 +4,11 @@ Demo of the app
 
 
 
-https://github.com/omarito47/todo_app/assets/73294872/0e327d94-b88b-449d-ade0-e07ca77ad491
+https://github.com/omarito47/todo_app/assets/73294872/4cd201b8-ad23-4da8-9adc-a8f58849ec98
+
+
+
+
 
 
 
@@ -13,7 +17,7 @@ https://github.com/omarito47/todo_app/assets/73294872/0e327d94-b88b-449d-ade0-e0
 
 ## Getting Started
 
-This project is a simple todo app that allows users to manage their tasks. It utilizes local storage with the sqflite package to store and retrieve todo items. Additionally, it implements a concept of switchable theme modes, allowing users to switch between dark and light themes.
+This project is a simple todo app that allows users to manage their tasks. It utilizes local storage with the sqflite package to store and retrieve todo items. Additionally, it implements a concept of switchable theme modes, allowing users to switch between dark and light themes,also alloiw user to switch the way of displaying their todo into two mode List or Gridview.
 
 Features
 The todo app provides the following features:
@@ -29,7 +33,7 @@ The todo app provides the following features:
 - Switch theme mode: Users can switch between dark and light themes to customize the app's appearance based on their preference.
 
 ## Downlad the app from this link
-https://github.com/omarito47/todo_app/releases/download/v2.0.0/app-release.apk
+https://github.com/omarito47/todo_app/releases/download/v2.1.0/app-release.apk
 
 
 A few resources to get you started if this is your first Flutter project:
