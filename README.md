@@ -28,8 +28,8 @@ The todo app provides the following features:
 
 - Switch theme mode: Users can switch between dark and light themes to customize the app's appearance based on their preference.
 
-
-
+## Downlad the app from this link
+https://github.com/omarito47/todo_app/releases/download/v2.0.0/app-release.apk
 
 
 A few resources to get you started if this is your first Flutter project:
