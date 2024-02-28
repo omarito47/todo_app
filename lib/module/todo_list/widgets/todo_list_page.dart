@@ -100,18 +100,16 @@ class _TodoListPageState extends State<TodoListPage> {
               itemBuilder: (context, index) {
                 TodoItem todoItem = todoItems[index];
                 // Generate random height and color values
-             
+
                 Color randomColor =
                     Color((Random().nextDouble() * 0xFFFFFF).toInt() << 0)
                         .withOpacity(1.0);
                 return SizedBox(
-                 
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Dismissible(
-                      
+                        direction: DismissDirection.startToEnd,
                         background: Container(
-                          
                           color: Colors.red,
                           child: const Stack(
                             children: [
@@ -138,23 +136,21 @@ class _TodoListPageState extends State<TodoListPage> {
                           });
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                                content: Text("Removed task ${todoItem.title}")),
+                                content:
+                                    Text("Removed task ${todoItem.title}")),
                           );
                         },
                         child: Container(
                           
                           child: Card(
                             elevation: 5,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
                             child: InkWell(
                               onTap: () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        TodoItemPage(existingTodoItem: todoItem),
+                                    builder: (context) => TodoItemPage(
+                                        existingTodoItem: todoItem),
                                   ),
                                 );
                               },
@@ -186,7 +182,8 @@ class _TodoListPageState extends State<TodoListPage> {
                                     onChanged: (value) {
                                       setState(() {
                                         todoItem.completed = value!;
-                                        DatabaseHelper().updateTodoItem(todoItem);
+                                        DatabaseHelper()
+                                            .updateTodoItem(todoItem);
                                       });
                                     },
                                   ),
@@ -206,6 +203,7 @@ class _TodoListPageState extends State<TodoListPage> {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Dismissible(
+                    direction: DismissDirection.startToEnd,
                     background: Container(
                       color: Colors.red,
                       child: const Stack(
@@ -239,8 +237,6 @@ class _TodoListPageState extends State<TodoListPage> {
                     child: Card(
                       elevation: 5,
                       child: ListTile(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30)),
                         leading: Checkbox(
                           value: todoItem.completed,
                           onChanged: (value) {
@@ -254,7 +250,13 @@ class _TodoListPageState extends State<TodoListPage> {
                         subtitle: Text(todoItem.description),
                         trailing: IconButton(
                           onPressed: () {
-                            showEditTodoItemDialog(todoItem);
+                             Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => TodoItemPage(
+                                        existingTodoItem: todoItem),
+                                  ),
+                                );
                           },
                           icon: const Icon(Icons.edit_outlined),
                         ),
@@ -281,94 +283,6 @@ class _TodoListPageState extends State<TodoListPage> {
       ),
       floatingActionButtonLocation:
           FloatingActionButtonLocation.miniCenterDocked,
-    );
-  }
-
-  Future<void> showEditTodoItemDialog(TodoItem todoItem) async {
-    final _formKey = GlobalKey<FormState>();
-    String? newTitle;
-    String? newDescription;
-    String? newType;
-
-    TextEditingController titleController =
-        TextEditingController(text: todoItem.title);
-    TextEditingController descriptionController =
-        TextEditingController(text: todoItem.description);
-    TextEditingController typeController =
-        TextEditingController(text: todoItem.type);
-
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Edit Todo Item'),
-          content: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                TextFormField(
-                  controller: titleController,
-                  decoration: const InputDecoration(hintText: 'Title'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a title';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    newTitle = value;
-                  },
-                ),
-                TextFormField(
-                  controller: descriptionController,
-                  decoration: const InputDecoration(hintText: 'Description'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a description';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    newDescription = value;
-                  },
-                ),
-                TextFormField(
-                  controller: typeController,
-                  decoration: const InputDecoration(hintText: 'Type'),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter a type';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    newType = value;
-                  },
-                ),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                final form = _formKey.currentState;
-                if (form != null && form.validate()) {
-                  form.save();
-                  editTodoItem(todoItem, newTitle!, newDescription!, newType!);
-                }
-              },
-              child: const Text('Save'),
-            ),
-          ],
-        );
-      },
     );
   }
 

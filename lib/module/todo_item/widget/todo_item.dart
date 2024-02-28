@@ -54,6 +54,8 @@ class _TodoItemPageState extends State<TodoItemPage> {
                           builder: (BuildContext context) {
                             return WarningDialog(
                               onSave: () async {
+                                 todoItems =
+                                    await TodoController().getTodoItems();
                                 TodoController().addTodoItem(
                                     newTitle!, newDescription!, "", todoItems);
 

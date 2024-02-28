@@ -1,15 +1,22 @@
 import 'package:todo_app/global/global.dart';
 import 'package:flutter/material.dart';
+
 enum ThemeModeOptions { Light, Dark }
 
 class ThemeProvider with ChangeNotifier {
   late SharedPreferences prefs;
   late ThemeMode themeMode = ThemeMode.light;
   //dark theme mode
-  final darkTheme = ThemeData(colorSchemeSeed: Colors.black, brightness: Brightness.dark,useMaterial3: true,);
+  final darkTheme = ThemeData(
+    colorSchemeSeed: Colors.blue,
+    brightness: Brightness.dark,
+    useMaterial3: true,
+  );
   //light theme mode
-  final lightTheme =
-      ThemeData(colorSchemeSeed: Colors.green, brightness: Brightness.light,useMaterial3: true );
+  final lightTheme = ThemeData(
+      colorSchemeSeed: Colors.blue,
+      brightness: Brightness.light,
+      useMaterial3: true);
 
   ThemeProvider() {
     initPrefs();
