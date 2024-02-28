@@ -3,7 +3,11 @@
 Demo of the app
 
 
-https://github.com/omarito47/todo_app/assets/73294872/b67a0c5a-275c-494d-8019-d213fcccaf93
+
+https://github.com/omarito47/todo_app/assets/73294872/0e327d94-b88b-449d-ade0-e07ca77ad491
+
+
+
 
 
 
@@ -24,8 +28,8 @@ The todo app provides the following features:
 
 - Switch theme mode: Users can switch between dark and light themes to customize the app's appearance based on their preference.
 
-## link to download the app
-https://github.com/omarito47/todo_app/releases/tag/v1.0.0
+
+
 
 
 A few resources to get you started if this is your first Flutter project:
